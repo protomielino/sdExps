@@ -29,13 +29,6 @@
 #endif
 #include <cmath>
 #include <cfloat>
-#ifndef _WIN32
-// std::isnan should be available as of C++11 (201103L) but some compiler
-// vendors set this even though support is incomplete
-#if __cplusplus>=201402L // compiler claims to be C++14 compliant
-#define isnan std::isnan
-#endif
-#endif // _WIN32
 
 #include "accc.h"
 
@@ -479,7 +472,7 @@ int computeNorm(const point_t &pv1, const point_t &pv2, const point_t &pv3, poin
     norm.y = (p3 * q1 - q3 * p1) / dd;
     norm.z = (p1 * q2 - q1 * p2) / dd;
 
-    if (isnan(norm.x) || isnan(norm.y) || isnan(norm.z))
+    if (std::isnan(norm.x) || std::isnan(norm.y) || std::isnan(norm.z))
     {
         norm.set(0.0, 1.0, 0.0);
         return 0;
