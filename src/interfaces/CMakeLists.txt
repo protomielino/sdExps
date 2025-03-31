@@ -7,7 +7,7 @@ SET(INTERFACES_HEADERS car.h graphic.h playerpref.h raceman.h
                        camera.h sound.h)
 
 # Fictive = no-output target, for having source files available in IDEs.
-SD_ADD_LIBRARY(interfaces INTERFACE ${INTERFACES_HEADERS})
+SD_ADD_LIBRARY(interfaces INTERFACE)
 
 target_include_directories(interfaces INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(interfaces INTERFACE math)

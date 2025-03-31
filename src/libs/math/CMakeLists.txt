@@ -8,5 +8,5 @@ SET(_SOURCES constants.h linalg_t.h straight2_t.h  v2_t.h v3_t.h  v4_t.h
 SD_INSTALL_FILES(INCLUDE tmath FILES ${_SOURCES})
 
 # Fictive = no-output target, for having source files available in IDEs.
-add_library(math INTERFACE ${_SOURCES})
+add_library(math INTERFACE)
 target_include_directories(math INTERFACE ${CMAKE_CURRENT_LIST_DIR})
