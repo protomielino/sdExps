@@ -27,7 +27,6 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <variant>
 
 #include "tgf.h"
 #include "tgfdata.h"
