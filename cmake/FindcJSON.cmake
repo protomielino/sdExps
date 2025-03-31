@@ -82,6 +82,8 @@ if(CJSON_FOUND)
     set(CJSON_LIBRARIES "${CJSON_LIBRARY}")
     if(NOT TARGET cJSON::cJSON)
         if(TARGET "${CJSON_LIBRARY}")
+            set_target_properties("${CJSON_LIBRARY}" PROPERTIES
+                IMPORTED_GLOBAL TRUE)
             # Alias if we found the config file
             add_library(cJSON::cJSON ALIAS cjson)
         else()
