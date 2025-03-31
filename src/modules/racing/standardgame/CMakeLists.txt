@@ -61,6 +61,9 @@ SD_ADD_LIBRARY(standardgame MODULE ${_SOURCES} ${_HEADERS} ${_OTHER_SOURCES})
 
 ADD_SDLIB_LIBRARY(standardgame portability tgf tgfdata robottools ${NETWORKING_LIB} tgfclient)
 
+target_compile_features(standardgame PRIVATE cxx_std_11)
+set_target_properties(standardgame PROPERTIES CXX_STANDARD 11 CXX_EXTENSIONS OFF)
+
 ADD_CURL_LIBRARY(standardgame)
 
 IF(OPTION_3RDPARTY_SQLITE3)

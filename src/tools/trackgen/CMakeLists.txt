@@ -32,6 +32,10 @@ ENDIF(MSVC)
 # Note: Headers and other sources needed for having them available in IDEs.
 SD_ADD_EXECUTABLE(${_TARGET_NAME} ${_SOURCES} ${_HEADERS} ${_OTHER_SOURCES})
 
+target_compile_features(${_TARGET_NAME} PRIVATE cxx_std_11)
+set_target_properties(${_TARGET_NAME} PROPERTIES
+    CXX_STANDARD 11 CXX_EXTENSIONS OFF)
+
 ADD_SDLIB_LIBRARY(${_TARGET_NAME} portability robottools tgf tgfclient)
 
 IF(OPENGL_FOUND)

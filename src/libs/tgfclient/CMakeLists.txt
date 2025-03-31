@@ -54,6 +54,8 @@ ENDIF(MSVC)
 SD_ADD_LIBRARY(tgfclient SHARED ${_SOURCES} ${_OTHER_SOURCES})
 
 target_include_directories(tgfclient PUBLIC ${CMAKE_CURRENT_LIST_DIR})
+target_compile_features(tgfclient PRIVATE cxx_std_11)
+set_target_properties(tgfclient PROPERTIES CXX_STANDARD 11 CXX_EXTENSIONS OFF)
 
 # Might not work with GCC 4.5 or + (non-robot modules crash at 1st reload = after 1 dlclose)
 #SET_TARGET_PROPERTIES(tgfclient PROPERTIES VERSION ${VERSION} SOVERSION 0.0.0)

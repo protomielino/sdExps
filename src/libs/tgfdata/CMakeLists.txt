@@ -27,6 +27,8 @@ ENDIF(COMMAND CMAKE_POLICY)
 
 # Note: Headers needed for having them available in IDEs.
 SD_ADD_LIBRARY(tgfdata SHARED ${TGFDATA_SOURCES} ${TGFDATA_HEADERS})
+target_compile_features(tgfdata PUBLIC cxx_std_11)
+set_target_properties(tgfdata PROPERTIES CXX_STANDARD 11 CXX_EXTENSIONS OFF)
 
 # Might not work with GCC 4.5 or + (non-robot modules crash at 1st reload = after 1 dlclose)
 #SET_TARGET_PROPERTIES(tgfdata PROPERTIES VERSION ${VERSION} SOVERSION 0.0.0)

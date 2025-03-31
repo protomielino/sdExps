@@ -47,6 +47,9 @@ ENDIF(MSVC)
 # Note: Headers and other source files needed for having them available in IDEs.
 SD_ADD_LIBRARY(snddefault MODULE ${_SOURCES} ${_HEADERS} ${_OTHER_SOURCES})
 
+target_compile_features(snddefault PRIVATE cxx_std_11)
+set_target_properties(snddefault PROPERTIES CXX_STANDARD 11 CXX_EXTENSIONS OFF)
+
 # Might not work with GCC 4.5 or + (non-robot modules crash at 1st reload = after 1 dlclose)
 #SET_TARGET_PROPERTIES(snddefault PROPERTIES VERSION ${VERSION} SOVERSION 0.0.0)
 

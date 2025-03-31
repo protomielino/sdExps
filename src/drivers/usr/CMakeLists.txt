@@ -61,5 +61,9 @@ ROBOT_MODULE(NAME ${ROBOT_NAME} VERSION 3.0.0 SOVERSION 1.0.0
               INTERFACE ${ROBOT_INTERFACE}
               SOURCES ${ROBOT_SOURCES})
 
+target_compile_features(${ROBOT_NAME} PRIVATE cxx_std_11)
+set_target_properties(${ROBOT_NAME} PROPERTIES
+    CXX_STANDARD 11 CXX_EXTENSIONS OFF)
+
 # For data associated to the ubiquirous USR robot module and its clones,
 # see data/drivers/usr*/CMakeLists.txt

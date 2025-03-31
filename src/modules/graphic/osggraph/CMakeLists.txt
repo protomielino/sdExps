@@ -121,6 +121,9 @@ ENDIF(MSVC)
 # Note: Other sources and headers needed for having them available in IDEs.
 SD_ADD_LIBRARY(osggraph MODULE ${OSGGRAPH_SOURCES} ${OSGGRAPH_HEADERS} ${OSGGRAPH_OTHER_SOURCES})
 
+target_compile_features(osggraph PRIVATE cxx_std_11)
+set_target_properties(osggraph PROPERTIES CXX_STANDARD 11 CXX_EXTENSIONS OFF)
+
 # Might not work with GCC 4.5 or + (non-robot modules crash at 1st reload = after 1 dlclose)
 #SET_TARGET_PROPERTIES(osggraph PROPERTIES VERSION ${VERSION} SOVERSION 0.0.0)
 
