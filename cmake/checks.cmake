@@ -339,14 +339,14 @@ MACRO(CHECK_LIBRARIES)
 	ENDIF(TINYGLTF_FOUND)
 
 	# cJSON
-	Find_Package(cJSON)
+	Find_Package(cJSON REQUIRED)
 
-	IF(CJSON_FOUND)
+	IF(cJSON_FOUND)
 		SET(HAVE_CJSON 1)
 		MESSAGE(STATUS "Looking for library cJSON - found")
-	ELSE(CJSON_FOUND)
+	ELSE(cJSON_FOUND)
 		MESSAGE(STATUS "Looking for library cJSON - NOT found")
-	ENDIF(CJSON_FOUND)
+	ENDIF()
 
 	# minizip
 	Find_Package(minizip)
