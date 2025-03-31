@@ -162,10 +162,12 @@ MACRO(SD_ADD_LIBRARY TARGET_NAME TARGET_TYPE)
 
   ENDIF()
 
-  # Change target location (for running in build-tree without installing).
-  SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES
-                        RUNTIME_OUTPUT_DIRECTORY "${_TGT_DIR}"
-                        LIBRARY_OUTPUT_DIRECTORY "${_TGT_DIR}")
+  IF(NOT ${TARGET_TYPE} STREQUAL "INTERFACE")
+    # Change target location (for running in build-tree without installing).
+    SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES
+                          RUNTIME_OUTPUT_DIRECTORY "${_TGT_DIR}"
+                          LIBRARY_OUTPUT_DIRECTORY "${_TGT_DIR}")
+  ENDIF()
 
   IF(MSVC)
 
