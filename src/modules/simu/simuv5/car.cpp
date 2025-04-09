@@ -91,11 +91,11 @@ SimCarConfig(tCar *car)
         GfLogInfo("SimuV5 feature REV LIMIT on\n");
     }
 
-    /*enabling = GfParmGetStr(hdle, SECT_FEATURES, PRM_TIRETEMPDEG, VAL_NO);
+    enabling = GfParmGetStr(hdle, SECT_FEATURES, PRM_TIRETEMPDEG, VAL_NO);
     if (strcmp(enabling, VAL_YES) == 0)
     {
         car->features = car->features | FEAT_TIRETEMPDEG;
-    }*/
+    }
 
     enabling = GfParmGetStr(hdle, SECT_FEATURES, PRM_TIRECOMPOUNDS, VAL_NO);
     if (strcmp(enabling, VAL_YES) == 0)
