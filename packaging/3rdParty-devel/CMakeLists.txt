@@ -24,7 +24,7 @@
 #==============================================================================
 #
 # (hashtag) starts a comment
-cmake_minimum_required(VERSION 3.5.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
 
 IF(POLICY CMP0135)
    CMAKE_POLICY(SET CMP0135 NEW)
@@ -244,6 +244,7 @@ if(OPTION_OPENAL)
          COMMAND ${CMAKE_COMMAND} -E copy_if_different
          "${CMAKE_SOURCE_DIR}/patches/${OPENAL_LEGACY_PROJECT}.CMakeLists.txt"
          "<SOURCE_DIR>/CMakeLists.txt"
+         INDEPENDENT TRUE
          DEPENDEES update # do after update
          DEPENDERS patch)  # do before patch
    elseif(MSVC_VERSION LESS 1910)
@@ -284,12 +285,14 @@ if(OPTION_JPEG)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
               "${CMAKE_SOURCE_DIR}/patches/${JPEG_PROJECT}.CMakeLists.txt"
               "<SOURCE_DIR>/CMakeLists.txt"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
    ExternalProject_Add_Step(${JPEG_PROJECT} jpeg_config
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
               "<SOURCE_DIR>/jconfig.vc"
               "<SOURCE_DIR>/jconfig.h"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
 else()
@@ -305,6 +308,7 @@ if(OPTION_ENET)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
               "${CMAKE_SOURCE_DIR}/patches/${ENET_PROJECT}.CMakeLists.txt"
               "<SOURCE_DIR>/CMakeLists.txt"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
 else()
@@ -333,6 +337,7 @@ if(OPTION_VORBIS)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
            "${CMAKE_SOURCE_DIR}/patches/vorbis/vorbis.def"
            "<SOURCE_DIR>/win32/vorbis.def"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
 
@@ -340,6 +345,7 @@ if(OPTION_VORBIS)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
            "${CMAKE_SOURCE_DIR}/patches/vorbis/vorbisenc.def"
            "<SOURCE_DIR>/win32/vorbisenc.def"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
 
@@ -347,6 +353,7 @@ if(OPTION_VORBIS)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
            "${CMAKE_SOURCE_DIR}/patches/vorbis/vorbisfile.def"
            "<SOURCE_DIR>/win32/vorbisfile.def"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
 else()
@@ -423,6 +430,7 @@ if(OPTION_SQLITE3)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
            "${CMAKE_SOURCE_DIR}/patches/sqlite3-CMakeLists.txt"
            "<SOURCE_DIR>/CMakeLists.txt"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
 else()
@@ -516,6 +524,7 @@ if(OPTION_OSG)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${CMAKE_SOURCE_DIR}/patches/OpenSceneGraph-3.6.5/DisplaySettings.cpp"
             "<SOURCE_DIR>/src/osg/DisplaySettings.cpp"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
 
@@ -523,6 +532,7 @@ if(OPTION_OSG)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${CMAKE_SOURCE_DIR}/patches/OpenSceneGraph-3.6.5/GraphicsWindowWin32.cpp"
             "<SOURCE_DIR>/src/osgViewer/GraphicsWindowWin32.cpp"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
 
@@ -530,6 +540,7 @@ if(OPTION_OSG)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${CMAKE_SOURCE_DIR}/patches/OpenSceneGraph-3.6.5/CMakeLists.txt"
             "<SOURCE_DIR>/src/osgPlugins/curl/CMakeLists.txt"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
 endif()
@@ -547,6 +558,7 @@ if(OPTION_GLM)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
            "${CMAKE_SOURCE_DIR}/patches/glm-0.9.9.8.CMakeLists.txt"
            "<SOURCE_DIR>/CMakeLists.txt"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
 else()
@@ -575,6 +587,7 @@ if(OPTION_MINIZIP)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
               "${CMAKE_SOURCE_DIR}/patches/minizip-1.3.CMakeLists.txt"
               "<SOURCE_DIR>/CMakeLists.txt"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
 else()
@@ -596,12 +609,14 @@ if(OPTION_CJSON)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
               "${CMAKE_SOURCE_DIR}/patches/cJSON/CMakeLists.txt"
               "<SOURCE_DIR>/CMakeLists.txt"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
    ExternalProject_Add_Step(${CJSON_PROJECT} cjson_add_cmakeconfig
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
               "${CMAKE_SOURCE_DIR}/patches/cJSON/cJSONConfig.cmake.in"
               "<SOURCE_DIR>/cJSONConfig.cmake.in"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
 else()
@@ -619,6 +634,7 @@ if(OPTION_RHASH)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${CMAKE_SOURCE_DIR}/patches/rhash/CMakeLists.txt"
             "<SOURCE_DIR>/CMakeLists.txt"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
 
@@ -626,6 +642,7 @@ if(OPTION_RHASH)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${CMAKE_SOURCE_DIR}/patches/rhash/rhash-tohex.cmake"
             "<SOURCE_DIR>/rhash-tohex.cmake"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
 
@@ -633,6 +650,7 @@ if(OPTION_RHASH)
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
             "${CMAKE_SOURCE_DIR}/patches/rhash/librhash/CMakeLists.txt"
             "<SOURCE_DIR>/librhash/CMakeLists.txt"
+      INDEPENDENT TRUE
       DEPENDEES update # do after update
       DEPENDERS patch)  # do before patch
 else()
