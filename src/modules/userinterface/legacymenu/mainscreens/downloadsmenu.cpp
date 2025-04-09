@@ -337,9 +337,9 @@ void DownloadsMenu::recompute(unsigned ms)
             GfLogError("curl_multi_perform: %s\n", curl_multi_strerror(code));
             return;
         }
-        else if ((code = curl_multi_poll(multi, NULL, 0, msd, 0)) != CURLM_OK)
+        else if ((code = curl_multi_wait(multi, NULL, 0, msd, 0)) != CURLM_OK)
         {
-            GfLogError("curl_multi_poll: %s\n", curl_multi_strerror(code));
+            GfLogError("curl_multi_wait: %s\n", curl_multi_strerror(code));
             return;
         }
 
