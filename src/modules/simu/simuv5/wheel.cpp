@@ -23,6 +23,11 @@ static const char *WheelSect[4] = {SECT_FRNTRGTWHEEL, SECT_FRNTLFTWHEEL, SECT_RE
 static const char *SuspSect[4] = {SECT_FRNTRGTSUSP, SECT_FRNTLFTSUSP, SECT_REARRGTSUSP, SECT_REARLFTSUSP};
 static const char *BrkSect[4] = {SECT_FRNTRGTBRAKE, SECT_FRNTLFTBRAKE, SECT_REARRGTBRAKE, SECT_REARLFTBRAKE};
 
+static bool tyredeg_enabled(const tCar *car)
+{
+    return car->options->tyre_temperature && car->features & FEAT_TIRETEMPDEG;
+}
+
 void SimWheelConfig(tCar *car, int index)
 {
     void *hdle = car->params;
@@ -261,7 +266,7 @@ void SimWheelConfig(tCar *car, int index)
         wheel->Topt = wheel->ToptC[wheel->tireSet];
     }
 
-    if (car->options->tyre_temperature)
+    if (tyredeg_enabled(car))
     {
         wheel->Ttire = wheel->Tinit;
     }
@@ -731,7 +736,7 @@ void SimWheelUpdateForce(tCar *car, int index)
     mu = wheel->mu * (wheel->lfMin + (wheel->lfMax - wheel->lfMin) * exp(wheel->lfK * wheel->forces.z / wheel->opLoad));
 
     //temperature and degradation
-    if (car->options->tyre_temperature)
+    if (tyredeg_enabled(car))
 	{
 		tireCond = wheel->currentGripFactor;
 		mu *= tireCond;
@@ -812,7 +817,7 @@ void SimWheelUpdateForce(tCar *car, int index)
     //tdble Work = 0.0;
 
     /* update tire temperature and degradation */
-    if (car->options->tyre_temperature)
+    if (tyredeg_enabled(car))
     {
         SimWheelUpdateTire(car, index);
     }
