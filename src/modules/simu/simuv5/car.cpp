@@ -91,11 +91,11 @@ SimCarConfig(tCar *car)
         GfLogInfo("SimuV5 feature REV LIMIT on\n");
     }
 
-    /*enabling = GfParmGetStr(hdle, SECT_FEATURES, PRM_TIRETEMPDEG, VAL_NO);
+    enabling = GfParmGetStr(hdle, SECT_FEATURES, PRM_TIRETEMPDEG, VAL_NO);
     if (strcmp(enabling, VAL_YES) == 0)
     {
         car->features = car->features | FEAT_TIRETEMPDEG;
-    }*/
+    }
 
     enabling = GfParmGetStr(hdle, SECT_FEATURES, PRM_TIRECOMPOUNDS, VAL_NO);
     if (strcmp(enabling, VAL_YES) == 0)
@@ -166,7 +166,7 @@ SimCarConfig(tCar *car)
         car->fuel = car->tank;
     }
     car->fuel_prev = car->fuel;
-	
+
     car->fuelMass        = GfParmGetNum(hdle, SECT_CAR, PRM_FUELMASS, (char*)NULL, 1.0);
 
     setupFuel->desired_value = setupFuel->min = setupFuel->max = 80.0;

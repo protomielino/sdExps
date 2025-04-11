@@ -23,6 +23,11 @@ static const char *WheelSect[4] = {SECT_FRNTRGTWHEEL, SECT_FRNTLFTWHEEL, SECT_RE
 static const char *SuspSect[4] = {SECT_FRNTRGTSUSP, SECT_FRNTLFTSUSP, SECT_REARRGTSUSP, SECT_REARLFTSUSP};
 static const char *BrkSect[4] = {SECT_FRNTRGTBRAKE, SECT_FRNTLFTBRAKE, SECT_REARRGTBRAKE, SECT_REARLFTBRAKE};
 
+static bool tyredeg_enabled(const tCar *car)
+{
+    return car->options->tyre_temperature && car->features & FEAT_TIRETEMPDEG;
+}
+
 void SimWheelConfig(tCar *car, int index)
 {
     void *hdle = car->params;
@@ -70,8 +75,8 @@ void SimWheelConfig(tCar *car, int index)
     tdble rimmass = GfParmGetNum(hdle, WheelSect[index], PRM_RIMMASS, (char*)NULL, 7.0f);							// default 7 [kg]
     wheel->hysteresisFactor = GfParmGetNum(hdle, WheelSect[index], PRM_HYSTERESIS, (char*)NULL, 1.0f);				// default 1.0 [-]
 	wheel->coolingFactor = GfParmGetNum(hdle, WheelSect[index], PRM_TIRECOOLING, (char*)NULL, 0.0f);				// default 0.0 [-] maintain compatibility with older cars
-	wheel->latHeatFactor = GfParmGetNum(hdle, WheelSect[index], PRM_LATMUHEATING, (char*)NULL, 0.0f);				// default 0.0 [-] 
-	wheel->longHeatFactor = GfParmGetNum(hdle, WheelSect[index], PRM_LONGMUHEATING, (char*)NULL, 0.0f);				// default 0.0 [-] 
+	wheel->latHeatFactor = GfParmGetNum(hdle, WheelSect[index], PRM_LATMUHEATING, (char*)NULL, 0.0f);				// default 0.0 [-]
+	wheel->longHeatFactor = GfParmGetNum(hdle, WheelSect[index], PRM_LONGMUHEATING, (char*)NULL, 0.0f);				// default 0.0 [-]
 	wheel->tireSpeedCoolFactor = GfParmGetNum(hdle, WheelSect[index], PRM_TIRESPDCOOLING, (char*)NULL, 0.0f);		// default 0.0 [-] but recommend 0.5-1.25 for most cars
 	wheel->tireTreadDrainFactor = GfParmGetNum(hdle, WheelSect[index], PRM_TREADDRAINSPD, (char*)NULL, 0.0);		// default 0
     wheel->wearFactor = GfParmGetNum(hdle, WheelSect[index], PRM_WEAR, (char*)NULL, 1.0f);
@@ -261,7 +266,7 @@ void SimWheelConfig(tCar *car, int index)
         wheel->Topt = wheel->ToptC[wheel->tireSet];
     }
 
-    if (car->options->tyre_temperature)
+    if (tyredeg_enabled(car))
     {
         wheel->Ttire = wheel->Tinit;
     }
@@ -320,13 +325,13 @@ void SimWheelConfig(tCar *car, int index)
 
     wheel->mfC = (tdble)(2.0 - asin(RFactor) * 2.0 / PI);
     wheel->mfE = EFactor;
-	
+
 	// increase stiffness factor when temperature and pressure increases
 	// but only if temperature feature is enabled.
 	if (car->features & FEAT_TIRETEMPDEG)
 	{
 		//wheel->mfB = ((Ca*0.50) + (wheel->currentPressure * 0.0001)) / wheel->mfC;
-		
+
 		wheel->mfB = Ca / wheel->mfC;
 	}
 	else
@@ -731,7 +736,7 @@ void SimWheelUpdateForce(tCar *car, int index)
     mu = wheel->mu * (wheel->lfMin + (wheel->lfMax - wheel->lfMin) * exp(wheel->lfK * wheel->forces.z / wheel->opLoad));
 
     //temperature and degradation
-    if (car->options->tyre_temperature)
+    if (tyredeg_enabled(car))
 	{
 		tireCond = wheel->currentGripFactor;
 		mu *= tireCond;
@@ -812,7 +817,7 @@ void SimWheelUpdateForce(tCar *car, int index)
     //tdble Work = 0.0;
 
     /* update tire temperature and degradation */
-    if (car->options->tyre_temperature)
+    if (tyredeg_enabled(car))
     {
         SimWheelUpdateTire(car, index);
     }
@@ -1113,7 +1118,7 @@ void SimWheelUpdateTire(tCar *car, int index)
         wheel->currentGraining = 0.0f;
     }
 
-	// Temperature window. 
+	// Temperature window.
 	tdble di;
 
 	// Ratio modifier for when temp is under minimal optimal
@@ -1160,8 +1165,8 @@ void SimWheelUpdateTire(tCar *car, int index)
 		}
 	}
 
-	// Simulate tire punctures. Drop the grip to a low % 
-	// because metal-on-ground (ie. rim on road) contact 
+	// Simulate tire punctures. Drop the grip to a low %
+	// because metal-on-ground (ie. rim on road) contact
 	// still generates some traction, just not a lot.
 	if (wheel->currentWear >= 1.0 || (wheel->Ttire >= 473.14))
 	{
