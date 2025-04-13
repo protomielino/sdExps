@@ -399,7 +399,7 @@ else()
 endif()
 
 if(OPTION_PNG)
-   set(PNG_ARGS ${EXTERNALS_CMAKE_ARGS} -DPNG_SHARED=off -DPNG_TESTS=off)
+   set(PNG_ARGS ${EXTERNALS_CMAKE_ARGS} -DPNG_SHARED=ON -DPNG_TESTS=off)
    ExternalProject_Add(${PNG_PROJECT}
       DOWNLOAD_NAME ${PNG_FILE}
       URL ${PNG_URL}
