@@ -109,7 +109,6 @@ void GfCars::list(const std::string &path)
 
 		std::ostringstream ossCarFileName;
 		ossCarFileName << path << '/' << pszCarId << '/' << pszCarId << PARAMEXT;
-		GfLogInfo("ossCarFileName=%s\n", ossCarFileName.str().c_str());
 		void* hparmCar = GfParmReadFile(ossCarFileName.str(), GFPARM_RMODE_STD);
 
 		if (!hparmCar)
