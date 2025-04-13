@@ -92,7 +92,7 @@ set(jpeg_HEADERS jconfig.h
                 )
 
 
-add_library(jpeg STATIC ${jpeg_SOURCES} ${jpeg_HEADERS})
+add_library(jpeg ${jpeg_SOURCES} ${jpeg_HEADERS})
 
 
 install(FILES jconfig.h
