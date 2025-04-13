@@ -223,5 +223,5 @@ set(CJSON_HASH SHA256=3aa806844a03442c00769b83e99970be70fbef03735ff898f4811dd03b
 set(RHASH_VERSION 1.4.4)
 set(RHASH_PROJECT rhash-${RHASH_VERSION})
 set(RHASH_FILE ${RHASH_PROJECT}-src.tar.gz)
-set(RHASH_URL https://deac-riga.dl.sourceforge.net/project/rhash/rhash/${RHASH_VERSION}/${RHASH_FILE}?viasf=1)
+set(RHASH_URL https://sourceforge.net/projects/rhash/files/rhash/${RHASH_VERSION}/${RHASH_FILE}/download)
 set(RHASH_HASH SHA256=8e7d1a8ccac0143c8fe9b68ebac67d485df119ea17a613f4038cda52f84ef52a)
