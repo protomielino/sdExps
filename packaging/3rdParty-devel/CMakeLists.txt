@@ -211,22 +211,12 @@ endif()
 # message(WARNING "TODO - need to disable SDL2 static (it is overwritten by dll's SDL2.lib)")
 
 if(OPTION_SDL2)
-   if(MSVC_VERSION GREATER 1700)
-      set(SDL2_ARGS ${EXTERNALS_CMAKE_ARGS} -DSDL_STATIC=Off -DSDL_TEST=Off -DSDL_CMAKE_DEBUG_POSTFIX=)
-      ExternalProject_Add(${SDL2_PROJECT}
-         URL ${SDL2_URL}
-         URL_HASH ${SDL2_HASH}
-         CMAKE_ARGS ${SDL2_ARGS}
-         DEPENDS OpenGL-headers)
-   else()
-      set(SDL2_PROJECT ${SDL2_LEGACY_PROJECT})
-      set(SDL2_ARGS ${EXTERNALS_CMAKE_ARGS} -DSDL_STATIC=Off -DSDL_CMAKE_DEBUG_POSTFIX=)
-      ExternalProject_Add(${SDL2_PROJECT}
-         URL ${SDL2_LEGACY_URL}
-         URL_HASH ${SDL2_LEGACY_HASH}
-         CMAKE_ARGS ${SDL2_ARGS}
-         DEPENDS OpenGL-headers)
-   endif()
+   set(SDL2_ARGS ${EXTERNALS_CMAKE_ARGS} -DSDL_STATIC=Off -DSDL_TEST=Off -DSDL_CMAKE_DEBUG_POSTFIX=)
+   ExternalProject_Add(${SDL2_PROJECT}
+      URL ${SDL2_URL}
+      URL_HASH ${SDL2_HASH}
+      CMAKE_ARGS ${SDL2_ARGS}
+      DEPENDS OpenGL-headers)
 else()
    set(SDL2_PROJECT )
 endif()
