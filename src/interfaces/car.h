@@ -215,7 +215,20 @@ typedef struct
     tdble       penaltyTime;
     tdble		prevFromStartLine;
     double		wrongWayTime;
+
+    //-------------------------------------------------------
+    int         prevIntFromStartLine;
+    tdble       prevLapTime;
+    // corrected value of currLapTimeAtTrackPosition at 'type int' position
+    tdble       currLapTimeAtTrackPosition_corrected;
+
 } tCarRaceInfo;
+
+#define _prevIntFromStartLine   race.prevIntFromStartLine
+#define _prevLapTime            race.prevLapTime
+#define _currLapTimeAtTrackPosition_corrected   race.currLapTimeAtTrackPosition_corrected
+//-------------------------------------------------------
+
 /* structure access */
 #define _bestLapTime	        race.bestLapTime
 #define _commitBestLapTime      race.commitBestLapTime

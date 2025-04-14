@@ -922,7 +922,46 @@ ReCarsManageCar(tCarElt *car, bool& bestLapChanged)
         distFromStartLine = car->_trackPositionCount - 1;
         //GfLogError("distFromStartLine = %d trackPositionCount = %d\n", distFromStartLine, car->_trackPositionCount);
     }
-    car->_currLapTimeAtTrackPosition[distFromStartLine] = (float)car->_curLapTime;
+
+    /* Linearly interpolates the time to correct for the loss in precision of
+       the (int)car->_distFromStartLine variable. Solves simple line's equation. */
+
+    // If this is not a different distance from before, there is no need to
+    // repeat the calculations.
+    if (distFromStartLine != car->_prevIntFromStartLine)
+    {
+        float x1 = 0.0f, y1 = 0.0f;
+        float x2 = 0.0f, y2 = 0.0f;
+        int x = 0; float y = 0.0f;
+        float m = 0.0f;
+        float q = 0.0f;
+
+        x1 = car->_prevIntFromStartLine;
+        y1 = car->_prevLapTime;
+
+/* NOTE: still needs thorough verification. */
+        x2 = distFromStartLine > car->_prevIntFromStartLine ?
+                car->_distFromStartLine:        // going forward
+                distFromStartLine - 2 < car->_prevIntFromStartLine ?
+                    distFromStartLine - 2:      // going backward ** see above NOTE **
+                    car->_prevIntFromStartLine; // standing "still" at the same meter.
+/* :ETON */
+        y2 = car->_curLapTime;
+
+
+        m = (y2 - y1) / (x2 - x1);
+        q = y2 - m * x2; //q = y1 - m * x1;
+
+        x = distFromStartLine;
+        y = m * x + q;
+
+        car->_currLapTimeAtTrackPosition_corrected = y;
+        car->_currLapTimeAtTrackPosition[x] = car->_currLapTimeAtTrackPosition_corrected;
+        car->_prevLapTime = car->_currLapTimeAtTrackPosition_corrected;
+        car->_prevIntFromStartLine = distFromStartLine;
+    } /*or*/ else {
+        /*?*/
+    }
 }
 
 void

@@ -968,6 +968,10 @@ ReInitCars(void)
     for (int i = 0; i < nCars; i++)
     {
         ReInfo->s->cars[i] = &(ReInfo->carList[i]);
+ 
+        ReInfo->s->cars[i]->_prevIntFromStartLine = 0;
+        ReInfo->s->cars[i]->_prevLapTime = 0.0;
+        ReInfo->s->cars[i]->_currLapTimeAtTrackPosition_corrected = 0.0;
 
 #ifdef THIRD_PARTY_SQLITE3
         //open a table for each car
