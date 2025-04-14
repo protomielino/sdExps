@@ -1082,6 +1082,28 @@ cGrBoard::grDispCarBoard2(const tSituation *s)
 // @param car[in] A pointer to the current driver's car
 // @return void
 //
+static lapTime
+findClosest(lapTime *lapTimes, int n, float T)
+{
+    // Ricerca binaria
+    int left = 0, right = n - 1;
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+        if (lapTimes[mid].time < T) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+
+    // Controlla i valori vicini
+    lapTime closest = lapTimes[left];
+    if (left > 0 && fabs(lapTimes[left - 1].time - T) < fabs(closest.time - T)) {
+        closest = lapTimes[left - 1];
+    }
+
+    return closest;
+}
 void
 cGrBoard::grDispCarBoard3(const tSituation *s)
 {
@@ -1150,6 +1172,15 @@ cGrBoard::grDispCarBoard3(const tSituation *s)
     y -= dy;
 
     // ------------------------------------------------------------------------
+//    printf("arrlen(car->_currRTimeAtPos)%ld - arrcap(car->_currRTimeAtPos)%ld\n", 
+//                        arrlen(car->_currRTimeAtPos),
+//                        arrcap(car->_currRTimeAtPos));
+
+//    float T = 3.0;
+
+//    lapTime closest = findClosest(car->_currRTimeAtPos, arrlen(car->_currRTimeAtPos), T);
+//    printf("Il valore più prossimo a %.2f è %.2f con distanza %.2f.\n", T, closest.time, closest.distance);
+
 //driverinfo
     color = normal_color_;
 

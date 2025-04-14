@@ -713,6 +713,7 @@ initView(int x, int y, int width, int height, int /* flag */, void *screen)
     GfuiAddKey(screen, '3',            "Leaders Board",     NULL, grLeadersBoard, NULL);
     GfuiAddKey(screen, '2',            "Driver Counters",   NULL, grDriverCounters, NULL);
     GfuiAddKey(screen, '1',            "Driver Board",      NULL, grDriverBoard, NULL);
+    GfuiAddKey(screen, '7',            "Delta Best Lap",    NULL, grDeltaBestLap, NULL);
     GfuiAddKey(screen, '9',            "Mirror",            (void*)0, grSwitchMirror, NULL);
     GfuiAddKey(screen, '0',            "Arcade Board",      NULL, grArcadeBoard, NULL);
     GfuiAddKey(screen, '+', GFUIM_CTRL, "Zoom In",           NULL,	 grZoomIn, NULL);

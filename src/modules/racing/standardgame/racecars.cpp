@@ -42,6 +42,9 @@
 #include "raceresults.h"
 #include "racecars.h"
 
+#define STB_DS_IMPLEMENTATION
+#include "stb_ds.h"
+
 int ghostcarActive;
 double ghostcarTimeOffset;
 tReplayElt curGhostcarData, nextGhostcarData;
@@ -909,6 +912,10 @@ ReCarsManageCar(tCarElt *car, bool& bestLapChanged)
     car->_distFromStartLine = car->_trkPos.seg->lgfromstart +
         (car->_trkPos.seg->type == TR_STR ? car->_trkPos.toStart : car->_trkPos.toStart * car->_trkPos.seg->radius);
     car->_distRaced = (car->_laps - 1) * ReInfo->track->length + car->_distFromStartLine;
+
+    // mappa il tempo allo spazio
+    lapTime lt = { (float)car->_curLapTime, car->_distFromStartLine };
+    arrput(car->_currTimeAtPos, lt);
 
     // Remember current laptime at current track position
     int distFromStartLine = (int)car->_distFromStartLine;
