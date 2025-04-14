@@ -606,6 +606,12 @@ grDriverBoard(void *)
 }
 
 static void
+grDeltaBestLap(void *)
+{
+    grSelectBoard(7);
+}
+
+ static void
 grArcadeBoard(void *)
 {
     grSelectBoard(5);

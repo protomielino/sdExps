@@ -33,6 +33,7 @@
 #define GR_ATT_BOARD		"driver board"
 #define GR_ATT_COUNTER		"driver counter"
 #define GR_ATT_LEADER		"leader board"
+#define GR_ATT_DELTA        "delta board"
 #define GR_ATT_DEBUG		"debug info"
 #define GR_ATT_GGRAPH		"G graph"
 #define GR_ATT_ARCADE		"arcade"

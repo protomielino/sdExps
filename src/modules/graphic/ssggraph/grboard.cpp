@@ -133,6 +133,7 @@ cGrBoard::loadDefaults(const tCarElt *curCar)
     debugFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_DEBUG, NULL, 1);
     boardFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_BOARD, NULL, 3);
     leaderFlag  = (int)GfParmGetNum(grHandle, path, GR_ATT_LEADER, NULL, 1);
+    deltaFlag   = (int)GfParmGetNum(grHandle, path, GR_ATT_DELTA, NULL, 0);
     leaderNb  = (int)GfParmGetNum(grHandle, path, GR_ATT_NBLEADER, NULL, 10);
     counterFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_COUNTER, NULL, 1);
     GFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_GGRAPH, NULL, 3);
@@ -150,6 +151,7 @@ cGrBoard::loadDefaults(const tCarElt *curCar)
         snprintf(path, sizeof(path), "%s/%s", GR_SCT_DISPMODE, curCar->_name);
         debugFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_DEBUG, NULL, debugFlag);
         boardFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_BOARD, NULL, boardFlag);
+        deltaFlag = (int)GfParmGetNum(grHandle, path, GR_ATT_DELTA, NULL, deltaFlag);
         leaderFlag  = (int)GfParmGetNum(grHandle, path, GR_ATT_LEADER, NULL, leaderFlag);
         leaderNb  = (int)GfParmGetNum(grHandle, path, GR_ATT_NBLEADER, NULL, leaderNb);
         counterFlag   = (int)GfParmGetNum(grHandle, path, GR_ATT_COUNTER, NULL, counterFlag);
@@ -214,6 +216,10 @@ cGrBoard::selectBoard(int val)
     case 6:
         dashboardFlag = (dashboardFlag + 1) % 3;
         GfParmSetNum(grHandle, path, GR_ATT_DASHBOARD, (char*)NULL, (tdble)dashboardFlag);
+        break;
+    case 7:
+        deltaFlag = (deltaFlag + 1) % 2;
+        GfParmSetNum(grHandle, path, GR_ATT_DELTA, (char*)NULL, (tdble)deltaFlag);
         break;
     }
     GfParmWriteFile(NULL, grHandle, "graph");
@@ -846,6 +852,86 @@ cGrBoard::grDispCarBoard1(const tSituation *s)
     y -= dy;
 }  // grDispCarBoard1
 
+void
+cGrBoard::grDispDeltaBestLap(const tSituation *s)
+{
+    // Font sizes
+    static const int dxc = 60; // this should depend on the text size
+    static const int barCenterX = 540; // this should depend on the (split) window width
+    static const int barBottomY = 540; // this should depend on the (split) window height
+    static const int barHeight = 25; // this should depend on the text size
+    static const int halfTextWidth = dxc / 2;
+    //
+    // Display, in real time, diff of best and current lap (starting after the first valid lap)
+    if (car_->_bestLapTime != 0)
+    {
+        int dFSL = (int)car_->_distFromStartLine;
+        float deltabest = car_->_currLapTimeAtTrackPosition[dFSL] - car_->_bestLapTimeAtTrackPosition[dFSL];
+
+        // Clamp the delta best to limit the extension of the bar
+        const float maxdeltabest = 2.0f; // seconds
+        float clampeddeltabest = deltabest;
+        if (deltabest > maxdeltabest)
+        {
+          clampeddeltabest = maxdeltabest;
+        }
+        if (deltabest < -maxdeltabest)
+        {
+          clampeddeltabest = -maxdeltabest;
+        }
+
+        int border = 2;
+        float multiplier = 100.0f; // this should depend on the (split) window width
+        int xl = barCenterX - border - maxdeltabest * multiplier, yb = barBottomY - border;
+        int xr = barCenterX + border + maxdeltabest * multiplier, yt = barBottomY + border + barHeight;
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBegin(GL_QUADS);
+        {
+            glColor4f(0.189, 0.136, 0.234, 0.5);
+            glVertex2f(xl, yb);
+            glVertex2f(xr, yb);
+            glVertex2f(xr, yt);
+            glVertex2f(xl, yt);
+        }
+        glEnd();
+        glDisable(GL_BLEND);
+
+        if (deltabest > 0)
+        { //we are slower
+            glBegin(GL_QUADS);
+            {
+                glColor4f(0.50, 0.25, 0.25, 0.75);
+                glVertex2f(barCenterX,                                   barBottomY);
+                glVertex2f(barCenterX - (clampeddeltabest * multiplier), barBottomY);
+                glVertex2f(barCenterX - (clampeddeltabest * multiplier), barBottomY + barHeight);
+                glVertex2f(barCenterX,                                   barBottomY + barHeight);
+            }
+            glEnd();
+
+            grWriteTime(danger_color_, GFUI_FONT_BIG, barCenterX - halfTextWidth, barBottomY, dxc, deltabest, 1);
+        }
+        else if (deltabest < 0)
+        { //we are faster
+            glBegin(GL_QUADS);
+            {
+                glColor4f(0.25, 0.50, 0.25, 0.75);
+                glVertex2f(barCenterX,                                   barBottomY);
+                glVertex2f(barCenterX - (clampeddeltabest * multiplier), barBottomY);
+                glVertex2f(barCenterX - (clampeddeltabest * multiplier), barBottomY + barHeight);
+                glVertex2f(barCenterX,                                   barBottomY + barHeight);
+            }
+            glEnd();
+
+            grWriteTime( ok_color_, GFUI_FONT_BIG, barCenterX - halfTextWidth, barBottomY, dxc, deltabest, 1);
+        }
+    }
+    else
+    {
+        GfuiDrawString("--:---", normal_color_, GFUI_FONT_BIG, barCenterX - halfTextWidth, barBottomY);
+    }
+}
 
 //
 // grDispCarBoard2
@@ -1012,6 +1098,12 @@ cGrBoard::grDispCarBoard(const tSituation *s)
     }
 }
 
+void
+cGrBoard::grDispDeltaBoard(const tSituation *s)
+{
+    if (deltaFlag) 
+        grDispDeltaBestLap(s);
+}
 
 #define ALIGN_CENTER  0
 #define ALIGN_LEFT  1
@@ -1610,6 +1702,8 @@ void cGrBoard::refreshBoard(tSituation *s, const cGrFrameInfo* frameInfo,
             grDispCounterBoard2();
         if (dashboardFlag)
             grDispDashboard();
+        if (deltaFlag)
+            grDispDeltaBoard(s);
     }
 
     trackMap->display(currCar, s, 0, 0, rightAnchor, TOP_ANCHOR);
