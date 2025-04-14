@@ -856,11 +856,12 @@ void
 cGrBoard::grDispDeltaBestLap(const tSituation *s)
 {
     // Font sizes
-    static const int dxc = 60; // this should depend on the text size
-    static const int barCenterX = 540; // this should depend on the (split) window width
-    static const int barBottomY = 540; // this should depend on the (split) window height
-    static const int barHeight = 25; // this should depend on the text size
+    static const int dxc = GfuiFontWidth(GFUI_FONT_LARGE_C, "-:---");
+    static const int barCenterX = (leftAnchor + rightAnchor) / 2;
+    static const int barBottomY = 545;
+    static const int barHeight = 25;
     static const int halfTextWidth = dxc / 2;
+
     //
     // Display, in real time, diff of best and current lap (starting after the first valid lap)
     if (car_->_bestLapTime != 0)
@@ -882,8 +883,10 @@ cGrBoard::grDispDeltaBestLap(const tSituation *s)
 
         int border = 2;
         float multiplier = 100.0f; // this should depend on the (split) window width
-        int xl = barCenterX - border - maxdeltabest * multiplier, yb = barBottomY - border;
-        int xr = barCenterX + border + maxdeltabest * multiplier, yt = barBottomY + border + barHeight;
+        int xl = barCenterX - border - maxdeltabest * multiplier;
+        int yb = barBottomY - border;
+        int xr = barCenterX + border + maxdeltabest * multiplier;
+        int yt = barBottomY + border + barHeight;
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -910,7 +913,7 @@ cGrBoard::grDispDeltaBestLap(const tSituation *s)
             }
             glEnd();
 
-            grWriteTime(danger_color_, GFUI_FONT_BIG, barCenterX - halfTextWidth, barBottomY, dxc, deltabest, 1);
+            grWriteTime(danger_color_, GFUI_FONT_BIG, barCenterX + halfTextWidth, barBottomY, dxc, deltabest, 1);
         }
         else if (deltabest < 0)
         { //we are faster
@@ -924,7 +927,7 @@ cGrBoard::grDispDeltaBestLap(const tSituation *s)
             }
             glEnd();
 
-            grWriteTime( ok_color_, GFUI_FONT_BIG, barCenterX - halfTextWidth, barBottomY, dxc, deltabest, 1);
+            grWriteTime( ok_color_, GFUI_FONT_BIG, barCenterX + halfTextWidth, barBottomY, dxc, deltabest, 1);
         }
     }
     else
