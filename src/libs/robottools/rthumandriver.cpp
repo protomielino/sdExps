@@ -1908,8 +1908,10 @@ void HumanDriver::drive_mt(int index, tCarElt* car, tSituation *s)
                 || (cmd[CMD_UP_SHFT].type == GFCTRL_TYPE_KEYBOARD && keyInfo[lookUpKeyMap(cmd[CMD_UP_SHFT].val)].edgeUp)
                 || (cmd[CMD_UP_SHFT].type == GFCTRL_TYPE_JOY_ATOB && cmd[CMD_UP_SHFT].deadZone == 1))
         {
-            if (car->_gear > -1 && car->_gear < car->_gearNb - 1)
+            if (car->_gear > -1 && car->_gear < car->_gearNb - 1) {
+                usleep(50000);
                 car->_gearCmd++;
+            }
             else if (HCtx[idx]->seqShftAllowNeutral && car->_gear == -1)
                 car->_gearCmd = 0;
             /* always allow up shift out of reverse to improve game play */
@@ -1923,8 +1925,10 @@ void HumanDriver::drive_mt(int index, tCarElt* car, tSituation *s)
                 || (cmd[CMD_DN_SHFT].type == GFCTRL_TYPE_KEYBOARD && keyInfo[lookUpKeyMap(cmd[CMD_DN_SHFT].val)].edgeUp)
                 || (cmd[CMD_DN_SHFT].type == GFCTRL_TYPE_JOY_ATOB && cmd[CMD_DN_SHFT].deadZone == 1))
         {
-            if (car->_gear > 1)
+            if (car->_gear > 1) {
+                usleep(50000);
                 car->_gearCmd--;
+            }
             else if (HCtx[idx]->seqShftAllowNeutral && car->_gear == 1)
                 car->_gearCmd = 0;
             else if (HCtx[idx]->seqShftAllowReverse && car->_gear < 2)

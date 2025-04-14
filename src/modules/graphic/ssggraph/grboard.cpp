@@ -909,7 +909,11 @@ cGrBoard::grDispCarBoard2(const tSituation *s)
 
     // Display current lap time and split times
     GfuiDrawString("Time:", normal_color_, GFUI_FONT_SMALL_C, x, y);
-    grWriteTime(normal_color_, GFUI_FONT_SMALL_C, x2, y, dxc, car_->_curLapTime, 0);
+    if (car_->_commitBestLapTime) {
+       grWriteTime(normal_color_, GFUI_FONT_SMALL_C, x2, y, dxc, car_->_curLapTime, 0);
+    } else {
+        grWriteTime(inactive_color_, GFUI_FONT_SMALL_C, x2, y, dxc, car_->_curLapTime, 0);
+    }
     double time;
     if (grGetSplitTime(s, false, time, NULL, &color))
         grWriteTime(color, GFUI_FONT_SMALL_C, x3, y, dxc, time, 1);

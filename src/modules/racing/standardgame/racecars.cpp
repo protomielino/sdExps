@@ -186,7 +186,7 @@ reCarsApplyRaceRules(tCarElt *car)
     tTrackSeg		*seg = RtTrackGetSeg(&(car->_trkPos));
     tReCarInfo		*info = &(ReInfo->_reCarInfo[car->index]);
     tTrackSeg		*prevSeg = RtTrackGetSeg(&(info->prevTrkPos));
-    static const float	ctrlMsgColor[] = {0.0, 0.0, 1.0, 1.0};
+    static const float ctrlMsgColor[] = {0.5, 0.5, 0.1, 1.0};
 
     // DNF cars which need too much time for the current lap, this is mainly to avoid
     // that a "hanging" driver can stop the quali from finishing.
@@ -491,7 +491,7 @@ ReCarsManageCar(tCarElt *car, bool& bestLapChanged)
     int xx;
     tTrackSeg *sseg;
     tdble wseg;
-    static const float ctrlMsgColor[] = {0.0, 0.0, 1.0, 1.0};
+    static const float ctrlMsgColor[] = {0.5, 0.5, 0.1, 1.0};
     tSituation *s = ReInfo->s;
 
     tReCarInfo *info = &(ReInfo->_reCarInfo[car->index]);
