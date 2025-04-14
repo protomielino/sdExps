@@ -1104,8 +1104,8 @@ cGrBoard::grDispCarBoard3(const tSituation *s)
     const int dx = MAX(GfuiFontWidth(GFUI_FONT_MEDIUM_C, buf.c_str()), (xr - x));
 
     // Display board
-    // We have 8 rows with small font and 1 with middle
-    grSetupDrawingArea(x - 5, y + dy + 5, x + dx + 5, y - dy2 * 8 - dy + 5);
+    // We have 9 rows with small font and 1 with middle
+    grSetupDrawingArea(x - 5, y + dy + 5, x + dx + 5, y - dy2 * 9 - dy + 5);
 
     // Display driver name and race position (in medium font size)
     GfuiDrawString(buf.c_str(), emphasized_color_, GFUI_FONT_MEDIUM_C, x, y);  //yellow
@@ -1136,7 +1136,11 @@ cGrBoard::grDispCarBoard3(const tSituation *s)
 
     // Display current lap time and split times
     GfuiDrawString("Time:", normal_color_, GFUI_FONT_SMALL_C, x, y);
-    grWriteTime(normal_color_, GFUI_FONT_SMALL_C, x2, y, dxc, car_->_curLapTime, 0);
+    if (car_->_commitBestLapTime) {
+        grWriteTime(normal_color_, GFUI_FONT_SMALL_C, x2, y, dxc, car_->_curLapTime, 0);
+    } else {
+        grWriteTime(inactive_color_, GFUI_FONT_SMALL_C, x2, y, dxc, car_->_curLapTime, 0);
+    }
     double time;
 
     if (grGetSplitTime(s, false, time, NULL, &color))
