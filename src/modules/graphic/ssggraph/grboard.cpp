@@ -1117,12 +1117,24 @@ cGrBoard::grDispCarBoard3(const tSituation *s)
     // From now on we use small font
     dy = GfuiFontHeight(GFUI_FONT_SMALL_C);
 
-    // Display fuel
     GfuiDrawString("Fuel:", normal_color_, GFUI_FONT_SMALL_C, x, y);
     float *color = (car_->_fuel < 5.0) ? danger_color_ : normal_color_;    //red/white
     buf = std::to_string(car_->_fuel) + " l";
     buf = buf.substr(0, buf.find('.') + 2); // Keep only one decimal
     GfuiDrawString(buf.c_str(), color, GFUI_FONT_SMALL_C, x2, y, dxc, GFUI_ALIGN_HR);
+
+    // Display remaining laps with remaining fuel
+    if (car_->_laps > car_->_carLaps && car_->_laps > 1)
+    {
+        float fuelConsumpionPerLap = car_->_fuelTotal / (float)(car_->_laps-1);
+		float *remFuelLaps = const_cast<float*>(&(car_->_remainingFuelForLaps));
+		*remFuelLaps = car_->_fuel / fuelConsumpionPerLap;
+		int *cLaps = const_cast<int*>(&(car_->_carLaps));
+		*cLaps = car_->_laps;
+    }
+    buf = std::to_string(car_->_remainingFuelForLaps);
+    buf = buf.substr(0, buf.find('.') + 2); // Keep only one decimal
+    GfuiDrawString(buf.c_str(), color, GFUI_FONT_SMALL_C, x3, y, dxc, GFUI_ALIGN_HR);
     y -= dy;
 
     // Display lap counter

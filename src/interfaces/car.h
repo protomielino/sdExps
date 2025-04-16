@@ -217,16 +217,23 @@ typedef struct
     double		wrongWayTime;
 
     //-------------------------------------------------------
+    /* car data that need to be remembered between frames for the board3 */
+    FILE *csv_log;
     int         prevIntFromStartLine;
     tdble       prevLapTime;
-    // corrected value of currLapTimeAtTrackPosition at 'type int' position
+    // corrected value of currLapTimeAtTrackPosition for 'type int' positions
     tdble       currLapTimeAtTrackPosition_corrected;
-
+    lapTime    *currTimeAtPos;
+    int 		carLaps;
+    float 		remainingFuelForLaps;
 } tCarRaceInfo;
 
 #define _prevIntFromStartLine   race.prevIntFromStartLine
 #define _prevLapTime            race.prevLapTime
 #define _currLapTimeAtTrackPosition_corrected   race.currLapTimeAtTrackPosition_corrected
+#define _currTimeAtPos          race.currTimeAtPos
+#define _carLaps				race.carLaps
+#define _remainingFuelForLaps	race.remainingFuelForLaps
 //-------------------------------------------------------
 
 /* structure access */

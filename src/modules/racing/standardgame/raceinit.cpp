@@ -973,6 +973,19 @@ ReInitCars(void)
         ReInfo->s->cars[i]->_prevLapTime = 0.0;
         ReInfo->s->cars[i]->_currLapTimeAtTrackPosition_corrected = 0.0;
 
+        ReInfo->s->cars[i]->_carLaps = 0;
+        ReInfo->s->cars[i]->_remainingFuelForLaps = 0.0;
+
+//        char bf[256] = {};
+//        sprintf(bf, "/media/ciccio/92de1001-dd72-4a54-a6ae-02af7976c4da/home/_offoF/speed-dreams/csv_log_car_%1d.csv", i);
+//
+//        ReInfo->s->cars[i]->_csv_log = fopen(bf, "a+");
+//
+//        if (!ReInfo->s->cars[i]->_csv_log)
+//            exit(EXIT_FAILURE);
+
+        ReInfo->s->cars[i]->_currTimeAtPos = NULL;
+
 #ifdef THIRD_PARTY_SQLITE3
         //open a table for each car
         if (replayDB) {
