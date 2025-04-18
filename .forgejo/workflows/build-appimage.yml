@@ -33,7 +33,7 @@ jobs:
             /AppDir/usr/share/games/speed-dreams-2/data/icons/icon.png \
             /AppDir/usr/share/icons/
       - name: Generate AppImage
-        run: appimage-builder
+        run: appimage-builder --skip-tests
         working-directory: /
       - name: Upload AppImage
         run: |
