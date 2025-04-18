@@ -178,6 +178,11 @@ typedef struct CarPenalty
 
 GF_TAILQ_HEAD(CarPenaltyHead, struct CarPenalty);
 
+struct lapTime {
+    float time;
+    float pos;
+};
+
 /** Race Administrative info */
 typedef struct
 {
@@ -224,15 +229,15 @@ typedef struct
     // corrected value of currLapTimeAtTrackPosition for 'type int' positions
     tdble       currLapTimeAtTrackPosition_corrected;
     lapTime    *currTimeAtPos;
-    int 		carLaps;
-    float 		remainingFuelForLaps;
+    int         carLaps;
+    tdble       remainingFuelForLaps;
 } tCarRaceInfo;
-
+#define _csv_log                race.csv_log
 #define _prevIntFromStartLine   race.prevIntFromStartLine
 #define _prevLapTime            race.prevLapTime
 #define _currLapTimeAtTrackPosition_corrected   race.currLapTimeAtTrackPosition_corrected
 #define _currTimeAtPos          race.currTimeAtPos
-#define _carLaps				race.carLaps
+#define _carLaps                race.carLaps
 #define _remainingFuelForLaps	race.remainingFuelForLaps
 //-------------------------------------------------------
 

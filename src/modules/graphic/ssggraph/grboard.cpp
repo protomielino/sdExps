@@ -1123,17 +1123,18 @@ cGrBoard::grDispCarBoard3(const tSituation *s)
     buf = buf.substr(0, buf.find('.') + 2); // Keep only one decimal
     GfuiDrawString(buf.c_str(), color, GFUI_FONT_SMALL_C, x2, y, dxc, GFUI_ALIGN_HR);
 
-    // Display remaining laps with remaining fuel
+    // Display remaining laps available
     if (car_->_laps > car_->_carLaps && car_->_laps > 1)
     {
         float fuelConsumpionPerLap = car_->_fuelTotal / (float)(car_->_laps-1);
-		float *remFuelLaps = const_cast<float*>(&(car_->_remainingFuelForLaps));
-		*remFuelLaps = car_->_fuel / fuelConsumpionPerLap;
-		int *cLaps = const_cast<int*>(&(car_->_carLaps));
-		*cLaps = car_->_laps;
+        float *remFuelLaps = const_cast<float*>(&(car_->_remainingFuelForLaps));
+        *remFuelLaps = car_->_fuel / fuelConsumpionPerLap;
+        int *cLaps = const_cast<int*>(&(car_->_carLaps));
+        *cLaps = car_->_laps;
     }
     buf = std::to_string(car_->_remainingFuelForLaps);
     buf = buf.substr(0, buf.find('.') + 2); // Keep only one decimal
+    buf += " laps";
     GfuiDrawString(buf.c_str(), color, GFUI_FONT_SMALL_C, x3, y, dxc, GFUI_ALIGN_HR);
     y -= dy;
 
