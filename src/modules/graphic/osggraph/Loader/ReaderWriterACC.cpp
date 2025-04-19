@@ -110,14 +110,16 @@ osg::Node* ReaderWriterACC::readFile(std::istream& stream, const osgDB::ReaderWr
 
     while ((stream.good())&&(!stream.eof()))
     {
-        osg::Node* node = readObject(stream, fileData, identityTransform, TextureData());
+        osg::Node* node = readObject(stream, fileData, identityTransform, TextureData(), options);
         if (node)
             pWorld->addChild(node);
     }
     return pWorld;
 }
 
-osg::Node* ReaderWriterACC::readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTransform, TextureData textureData)
+osg::Node* ReaderWriterACC::readObject(std::istream& stream, FileData& fileData,
+    const osg::Matrix& parentTransform, TextureData textureData,
+    const osgDB::ReaderWriter::Options* options)
 {
     int textureId = 0;
     std::string texname0, texname1, texname2, texname3;
@@ -260,12 +262,29 @@ osg::Node* ReaderWriterACC::readObject(std::istream& stream, FileData& fileData,
 
             if (m_bCar)
             {
-                    if (textureId == 0 && (m_skinName == "" || texname != m_CarName))
+                if (textureId == 0)
+                {
+                    std::string::size_type p = texname.rfind('.');
+                    std::string basename = p != std::string::npos ?
+                        texname.substr(0, p) : texname;
+
+                    if (!m_skinName.empty())
+                    {
+                        std::string ext;
+
+                        if (p != std::string::npos)
+                            ext = texname.substr(p);
+
+                        std::string name = basename + "-" + m_skinName + ext;
+
+                        texname0 = !osgDB::findDataFile(name, options).empty() ?
+                            name : texname;
+                    }
+                    else
                         texname0 = texname;
-                    else if (textureId == 0)
-                        texname0 = m_skinName+".png";
 
                     GfLogDebug("TexName = %s\n", texname0.c_str());
+                }
             }
             else // track
             {
@@ -585,7 +604,7 @@ osg::Node* ReaderWriterACC::readObject(std::istream& stream, FileData& fileData,
             {
                 for (unsigned n = 0; n < num; n++)
                 {
-                    osg::Node *k = readObject(stream, fileData, transform*parentTransform, textureData);
+                    osg::Node *k = readObject(stream, fileData, transform*parentTransform, textureData, options);
                     if (k == 0)
                     {
                         osg::notify(osg::FATAL) << "osgDB SPEED DREAMS reader: error reading KIDS object" << std::endl;

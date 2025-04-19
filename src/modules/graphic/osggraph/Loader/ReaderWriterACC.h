@@ -1272,7 +1272,9 @@ public:
         m_CarName = name;
     }
     osg::Node* readFile(std::istream& stream, const osgDB::ReaderWriter::Options* options);
-    osg::Node* readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTransform, TextureData textureData);
+    osg::Node* readObject(std::istream& stream, FileData& fileData,
+        const osg::Matrix& parentTransform, TextureData textureData,
+        const osgDB::ReaderWriter::Options* options);
 
 protected:
     //Used for cars

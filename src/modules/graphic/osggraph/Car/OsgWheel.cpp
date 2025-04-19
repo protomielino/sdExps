@@ -124,13 +124,13 @@ osg::ref_ptr<osg::MatrixTransform> SDWheels::initWheel(int wheelIndex, bool comp
         if (osgDB::fileExists(localSkin))
         {
             TmpPath = localDir;
-            snprintf(buf, MaxPathSize, "wheel3d-%s", car->_skinName);
+            snprintf(buf, MaxPathSize, "%s", car->_skinName);
             bSkinName = buf;
         }
         else if (osgDB::fileExists(dataSkin))
         {
             TmpPath = dataDir;
-            snprintf(buf, MaxPathSize, "wheel3d-%s", car->_skinName);
+            snprintf(buf, MaxPathSize, "%s", car->_skinName);
             bSkinName = buf;
         }
 
@@ -162,7 +162,8 @@ osg::ref_ptr<osg::MatrixTransform> SDWheels::initWheel(int wheelIndex, bool comp
             if (wheel_mod_name && strlen(wheel_mod_name))
             {
                 snprintf(wheel_file_name, 32, "%s%d.acc", wheel_mod_name, j);
-                wheel = loader.Load3dFile(wheel_file_name, true, bSkinName);
+                wheel = loader.Load3dFile(wheel_file_name, true, car->_carName,
+                    bSkinName);
                 wheels_switches[wheelIndex]->addChild(wheel.get(), false);
                 GfLogDebug("Loading compound %s\n", wheel_mod_name);
             }
@@ -174,7 +175,8 @@ osg::ref_ptr<osg::MatrixTransform> SDWheels::initWheel(int wheelIndex, bool comp
             if (medium_mod_name && strlen(medium_mod_name))
             {
                 snprintf(wheel_file_name, 32, "%s%d.acc", medium_mod_name, j);
-                wheel = loader.Load3dFile(wheel_file_name, true, bSkinName);
+                wheel = loader.Load3dFile(wheel_file_name, true, car->_carName,
+                    bSkinName);
                 wheels_switches[wheelIndex]->addChild(wheel.get(), false);
                 GfLogDebug("Loading compound %s\n", medium_mod_name);
             }
@@ -186,7 +188,8 @@ osg::ref_ptr<osg::MatrixTransform> SDWheels::initWheel(int wheelIndex, bool comp
             if (hard_mod_name && strlen(hard_mod_name))
             {
                 snprintf(wheel_file_name, 32, "%s%d.acc", hard_mod_name, j);
-                wheel = loader.Load3dFile(wheel_file_name, true, bSkinName);
+                wheel = loader.Load3dFile(wheel_file_name, true, car->_carName,
+                    bSkinName);
                 wheels_switches[wheelIndex]->addChild(wheel.get(), false);
                 GfLogDebug("Loading compound %s\n", hard_mod_name);
             }
@@ -198,7 +201,8 @@ osg::ref_ptr<osg::MatrixTransform> SDWheels::initWheel(int wheelIndex, bool comp
             if (wet_mod_name && strlen(wet_mod_name))
             {
                 snprintf(wheel_file_name, 32, "%s%d.acc", wet_mod_name, j);
-                wheel = loader.Load3dFile(wheel_file_name, true, bSkinName);
+                wheel = loader.Load3dFile(wheel_file_name, true, car->_carName,
+                    bSkinName);
                 wheels_switches[wheelIndex]->addChild(wheel.get(), false);
                 GfLogDebug("Loading compound %s\n", wet_mod_name);
             }
@@ -210,7 +214,8 @@ osg::ref_ptr<osg::MatrixTransform> SDWheels::initWheel(int wheelIndex, bool comp
             if (extwet_mod_name && strlen(extwet_mod_name))
             {
                 snprintf(wheel_file_name, 32, "%s%d.acc", extwet_mod_name, j);
-                wheel = loader.Load3dFile(wheel_file_name, true, bSkinName);
+                wheel = loader.Load3dFile(wheel_file_name, true, car->_carName,
+                    bSkinName);
                 wheels_switches[wheelIndex]->addChild(wheel.get(), false);
                 GfLogDebug("Loading compound %s\n", extwet_mod_name);
             }
@@ -226,7 +231,8 @@ osg::ref_ptr<osg::MatrixTransform> SDWheels::initWheel(int wheelIndex, bool comp
             if (wheel_mod_name && strlen(wheel_mod_name))
             {
                 snprintf(wheel_file_name, 32, "%s%d.acc", wheel_mod_name, j);
-                wheel = loader.Load3dFile(wheel_file_name, true, bSkinName);
+                wheel = loader.Load3dFile(wheel_file_name, true, car->_carName,
+                    bSkinName);
                 wheels_switches[wheelIndex]->addChild(wheel.get(), false);
             }
         }
