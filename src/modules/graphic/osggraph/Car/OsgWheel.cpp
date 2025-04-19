@@ -124,13 +124,13 @@ osg::ref_ptr<osg::MatrixTransform> SDWheels::initWheel(int wheelIndex, bool comp
         if (osgDB::fileExists(localSkin))
         {
             TmpPath = localDir;
-            snprintf(buf, MaxPathSize, "wheel3d-%s", car->_skinName);
+            snprintf(buf, MaxPathSize, "%s", car->_skinName);
             bSkinName = buf;
         }
         else if (osgDB::fileExists(dataSkin))
         {
             TmpPath = dataDir;
-            snprintf(buf, MaxPathSize, "wheel3d-%s", car->_skinName);
+            snprintf(buf, MaxPathSize, "%s", car->_skinName);
             bSkinName = buf;
         }
 

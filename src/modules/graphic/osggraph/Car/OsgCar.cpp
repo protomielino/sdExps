@@ -311,7 +311,7 @@ osg::ref_ptr<osg::Node> SDCar::loadCar(tCarElt *Car, bool tracktype, bool subcat
 
     if (bCustomSkin)
     {
-        snprintf(buf, nMaxTexPathSize, "%s-%s", car->_carName, car->_skinName);
+        snprintf(buf, nMaxTexPathSize, "%s", car->_skinName);
         bSkinName = buf;
         snprintf(buf, nMaxTexPathSize, "%s.png", car->_carName);
         bCarName = buf;
