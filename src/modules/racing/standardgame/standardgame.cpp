@@ -314,8 +314,8 @@ bool StandardGame::loadPhysicsEngine()
 	if (_piPhysEngine)
 		return true;
 
-	// 1) Get the physics engine name from user settings (default: Simu V4.0)
-	static const char* pszDefaultModName = RM_VAL_MOD_SIMU_V4;
+	// 1) Get the physics engine name from user settings (default: Simu V5.0)
+	static const char* pszDefaultModName = RM_VAL_MOD_SIMU_V5;
 	std::string strModName =
 		GfParmGetStr(ReSituation::self().data()->_reParam, "Modules", "simu", pszDefaultModName);
 
