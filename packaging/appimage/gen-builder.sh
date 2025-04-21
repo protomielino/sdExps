@@ -21,6 +21,10 @@ AppDir:
     version: $(git describe --tags --dirty)
     exec: usr/games/speed-dreams-2
     exec_args: \$@
+  after_runtime: |
+    cd "\$TARGET_APPDIR/lib/x86_64-linux-gnu/"
+    ln -rs ../../runtime/compat/lib/x86_64-linux-gnu/libcrypt.so.1 libcrypt.so.1
+    ln -rs ../../runtime/compat/lib/x86_64-linux-gnu/libcrypt.so.1.1.0 libcrypt.so.1.1.0
   apt:
     arch:
     - $(dpkg --print-architecture)
@@ -35,6 +39,7 @@ AppDir:
     include:
     - libc6:$(dpkg --print-architecture)
     - locales
+    - libcrypt1
     - libenet7
     - libexpat1
     - libglu1-mesa
