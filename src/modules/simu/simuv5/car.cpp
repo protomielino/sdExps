@@ -27,6 +27,32 @@ static const char *SuspSect[4] = {SECT_FRNTRGTSUSP, SECT_FRNTLFTSUSP, SECT_REARR
 // The "Simu" logger instance
 GfLogger* PLogSimu = 0;
 
+static bool
+enable_tyreset(const tCar *car, const tCarSetup *setup)
+{
+    return car->options->tyre_temperature;
+}
+
+static bool
+enable_compound_set(const tCar *car, const tCarSetup *setup)
+{
+    return (car->features & FEAT_COMPOUNDS) && car->options->compounds;
+}
+
+static bool
+enable_front_wing_angle(const tCar *car, const tCarSetup *setup)
+{
+    return car->wing[0].WingType != -1
+        && setup->wingAngle[0].min != setup->wingAngle[0].max;
+}
+
+static bool
+enable_rear_wing_angle(const tCar *car, const tCarSetup *setup)
+{
+    return car->wing[1].WingType != -1
+        && setup->wingAngle[1].min != setup->wingAngle[1].max;
+}
+
 void
 SimCarConfig(tCar *car)
 {
@@ -435,49 +461,39 @@ SimCarConfig(tCar *car)
     setup->reqPenalty.stepsize = 1.0;
     setup->reqPenalty.changed = false;
 
-    priv->dashboardRequest[0].type = DI_FUEL;
-    priv->dashboardRequest[0].setup = &(setup->fuel);
-    priv->dashboardRequest[1].type = DI_REPAIR;
-    priv->dashboardRequest[1].setup = &(setup->reqRepair);
+    const struct setup
+    {
+        int type;
+        tCarSetupItem *setup;
+        bool (*enable)(const tCar *, const tCarSetup *);
+    } setups[] =
+    {
+        {DI_FUEL, &setup->fuel, NULL},
+        {DI_REPAIR, &setup->reqRepair, NULL},
+        {DI_TYRE_SET, &setup->reqTireset, enable_tyreset},
+        {DI_COMPOUND_SET, &setup->reqTirecompound, enable_compound_set},
+        {DI_FRONT_WING_ANGLE, &setup->wingAngle[0], enable_front_wing_angle},
+        {DI_REAR_WING_ANGLE, &setup->wingAngle[1], enable_rear_wing_angle},
+        {DI_PENALTY, &setup->reqPenalty, NULL}
+    };
 
-    for (i = 2; i < NR_DI_REQUEST; i++)
-    {
-        priv->dashboardRequest[i].type = DI_NONE;
-        priv->dashboardRequest[i].setup = NULL;
-    }
-    i=2;
-    if (car->options->tyre_temperature)
-    {
-        priv->dashboardRequest[2].type = DI_TYRE_SET;
-        priv->dashboardRequest[2].setup = &(setup->reqTireset);
-        i = 1;
-    }
+    size_t enabled = 0;
 
-    if ((car->features & FEAT_COMPOUNDS) && car->options->compounds)
+    for (size_t i = 0; i < sizeof setups / sizeof *setups; i++)
     {
-        priv->dashboardRequest[0].type = DI_COMPOUND_SET;
-        priv->dashboardRequest[0].setup = &(setup->reqTirecompound);
-    }
+        const struct setup &s = setups[i];
 
-    i =3;
-    if ( (car->wing[0].WingType != -1) && (setup->wingAngle[0].min != setup->wingAngle[0].max) )
-    {
-        priv->dashboardRequest[i].type = DI_FRONT_WING_ANGLE;
-        priv->dashboardRequest[i].setup = &(setup->wingAngle[0]);
-        i++;
-    }
+        if (!s.enable || s.enable(car, setup))
+        {
+            tDashboardItem &it = priv->dashboardRequest[enabled];
 
-    if ( (car->wing[1].WingType != -1) && (setup->wingAngle[1].min != setup->wingAngle[1].max) )
-    {
-        priv->dashboardRequest[i].type = DI_REAR_WING_ANGLE;
-        priv->dashboardRequest[i].setup = &(setup->wingAngle[1]);
-        i++;
+            it.type = s.type;
+            it.setup = s.setup;
+            enabled++;
+        }
     }
 
-    priv->dashboardRequest[i].type = DI_PENALTY;
-    priv->dashboardRequest[i].setup = &(setup->reqPenalty);
-    i++;
-    priv->dashboardRequestNb = i;
+    priv->dashboardRequestNb = enabled;
     priv->dashboardActiveItem = 0;
 }
 
