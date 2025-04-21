@@ -45,7 +45,6 @@ AppDir:
     - libsdl2-2.0-0
     - libsdl2-mixer-2.0-0
     - librhash0
-    - libenet7
     - libpng16-16
     - libjpeg8
     - zlib1g
