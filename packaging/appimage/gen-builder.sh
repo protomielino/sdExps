@@ -21,6 +21,10 @@ AppDir:
     version: $(git describe --tags --dirty)
     exec: usr/games/speed-dreams-2
     exec_args: \$@
+  after_runtime: |
+    cd "\$TARGET_APPDIR/lib/x86_64-linux-gnu/"
+    ln -rs ../../runtime/compat/lib/x86_64-linux-gnu/libcrypt.so.1 libcrypt.so.1
+    ln -rs ../../runtime/compat/lib/x86_64-linux-gnu/libcrypt.so.1.1.0 libcrypt.so.1.1.0
   apt:
     arch:
     - $(dpkg --print-architecture)
@@ -35,19 +39,28 @@ AppDir:
     include:
     - libc6:$(dpkg --print-architecture)
     - locales
+    - libcrypt1
     - libenet7
     - libexpat1
     - libglu1-mesa
     - libglx0
+    - libgl1
+    - libglvnd0
     - libopengl0
     - libopenscenegraph160
     - libcurl4
     - libsdl2-2.0-0
     - libsdl2-mixer-2.0-0
     - librhash0
-    - libenet7
     - libpng16-16
     - libjpeg8
+    - libx11-6
+    - libwayland-egl1
+    - libwayland-client0
+    - libwayland-cursor0
+    - libxau6
+    - libxdmcp6
+    - libxcb1
     - zlib1g
     - libminizip1
     - libopenal1
