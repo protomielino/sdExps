@@ -44,6 +44,8 @@ AppDir:
     - libexpat1
     - libglu1-mesa
     - libglx0
+    - libgl1
+    - libglvnd0
     - libopengl0
     - libopenscenegraph160
     - libcurl4
@@ -52,6 +54,13 @@ AppDir:
     - librhash0
     - libpng16-16
     - libjpeg8
+    - libx11-6
+    - libwayland-egl1
+    - libwayland-client0
+    - libwayland-cursor0
+    - libxau6
+    - libxdmcp6
+    - libxcb1
     - zlib1g
     - libminizip1
     - libopenal1
