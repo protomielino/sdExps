@@ -89,7 +89,7 @@ static int AnisotropicFilteringRightButtonId;
 /* list of available graphic engine */
 static const int DefaultGraphicVersion = 1;
 static const char *GraphicSchemeList[] = {RM_VAL_MOD_SSGRAPH, RM_VAL_MOD_OSGGRAPH};
-static const char *GraphicDispNameList[] = 	{"ssggraph", "OsgGraph"};
+static const char *GraphicDispNameList[] = 	{"ssggraph (old)", "OsgGraph (new)"};
 static const int NbGraphicScheme = sizeof(GraphicSchemeList) / sizeof(GraphicSchemeList[0]);
 static int CurGraphicScheme = DefaultGraphicVersion;
 
