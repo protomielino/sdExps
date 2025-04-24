@@ -71,7 +71,8 @@
 #include "raceresults.h"
 #include "raceinit.h"
 
-#include "stb_ds.h"
+#define STB_DS_IMPLEMENTATION
+#include "stb_ds.h"       // array dinamici
 
 
 static const char *aPszSkillLevelNames[] = ROB_VALS_LEVEL;
@@ -983,7 +984,11 @@ ReInitCars(void)
 //        if (!ReInfo->s->cars[i]->_csv_log)
 //            exit(EXIT_FAILURE);
 
-        ReInfo->s->cars[i]->_currTimeAtPos = NULL;
+        ReInfo->s->cars[i]->_trackLength = ReInfo->track->length;
+        ReInfo->s->cars[i]->_lap0Time = 0.0;
+        ReInfo->s->cars[i]->_telemetry.data = NULL;
+        ReInfo->s->cars[i]->_telemetry.lapIndex = NULL;
+        ReInfo->s->cars[i]->_telemetry.bestLapIndex = 0;
 
 #ifdef THIRD_PARTY_SQLITE3
         //open a table for each car
@@ -1103,8 +1108,14 @@ ReRaceCleanDrivers(void)
         free(ReInfo->s->cars[i]->_currLapTimeAtTrackPosition);
         free(ReInfo->s->cars[i]->_bestLapTimeAtTrackPosition);
 
-        arrfree(ReInfo->s->cars[i]->_currTimeAtPos);
-        ReInfo->s->cars[i]->_currTimeAtPos = NULL;
+        if (ReInfo->s->cars[i]->_telemetry.data) {
+            arrfree(ReInfo->s->cars[i]->_telemetry.data);
+            ReInfo->s->cars[i]->_telemetry.data = NULL;
+        }
+        if (ReInfo->s->cars[i]->_telemetry.lapIndex) {
+            arrfree(ReInfo->s->cars[i]->_telemetry.lapIndex);
+            ReInfo->s->cars[i]->_telemetry.lapIndex = NULL;
+        }
     }
 
     RtTeamManagerRelease();

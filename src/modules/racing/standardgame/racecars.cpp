@@ -42,7 +42,6 @@
 #include "raceresults.h"
 #include "racecars.h"
 
-#define STB_DS_IMPLEMENTATION
 #include "stb_ds.h"
 
 int ghostcarActive;
@@ -702,6 +701,9 @@ ReCarsManageCar(tCarElt *car, bool& bestLapChanged)
                     //        and is thus considered a real lap, whereas it is not).
                     car->_laps++;
 
+                    // ricorda l'indice iniziale telemetria del nuovo giro
+                    arrput(car->_telemetry.lapIndex, arrlen(car->_telemetry.data));
+
                     /*if (NetGetNetwork())
                         NetGetNetwork()->SendLapStatusPacket(car);*/
 
@@ -754,9 +756,14 @@ ReCarsManageCar(tCarElt *car, bool& bestLapChanged)
                                         car->_timeBeforeNext = s->cars[car->_pos + 1]->_bestLapTime - car->_bestLapTime;
                                     else
                                         car->_timeBeforeNext = 0;
+
+                                    // ricorda l'indice del giro migliore
                                 }
-                                //remeber the new valid best laptime (for the deltabest widget)
+
+                                //remeber the new valid best lap time
                                 memcpy(car->_bestLapTimeAtTrackPosition, car->_currLapTimeAtTrackPosition, car->_trackPositionCount * sizeof(float));
+                                // ricorda l'indice iniziale telemetria del giro migliore
+                                car->_telemetry.bestLapIndex = car->_telemetry.lapIndex[car->_laps-2];
                             }
 
                         }
@@ -852,6 +859,12 @@ ReCarsManageCar(tCarElt *car, bool& bestLapChanged)
                     if (car->_pos == 1)
                         ReUI().onLapCompleted(car->_laps - 1);
 
+                    for (int cccc = 0; cccc < arrlen(car->_telemetry.lapIndex); cccc++) {
+                        printf("%7d: \t %7ld \t %7ld\n",
+                            cccc,
+                            car->_telemetry.lapIndex[cccc],
+                            car->_telemetry.bestLapIndex);
+                    }
                 } else {
                     // Prevent infinite looping of cars around track,
                     // allowing one lap after finish for the first car, but no more
@@ -913,10 +926,6 @@ ReCarsManageCar(tCarElt *car, bool& bestLapChanged)
         (car->_trkPos.seg->type == TR_STR ? car->_trkPos.toStart : car->_trkPos.toStart * car->_trkPos.seg->radius);
     car->_distRaced = (car->_laps - 1) * ReInfo->track->length + car->_distFromStartLine;
 
-    // mappa il tempo allo spazio
-    lapTime lt = { (float)car->_curLapTime, car->_distFromStartLine };
-    arrput(car->_currTimeAtPos, lt);
-
     // Remember current laptime at current track position
     int distFromStartLine = (int)car->_distFromStartLine;
     if (distFromStartLine < 0)
@@ -968,6 +977,18 @@ ReCarsManageCar(tCarElt *car, bool& bestLapChanged)
         car->_prevIntFromStartLine = distFromStartLine;
     } /*or*/ else {
         /*?*/
+    }
+
+    // registra tempo e posizione in modo preciso in un array dinamico
+    if (car->_laps == 0) {
+        // salviamo il tempo dal "go" al primo giro.
+        car->_lap0Time = car->_curLapTime;
+    } else {
+    	telemetryData td = {
+                (float)car->_curTime + (float)car->_curLapTime - (float)car->_lap0Time,
+                car->_distRaced
+    	};
+        arrput(car->_telemetry.data, td);
     }
 }
 

@@ -33,6 +33,8 @@
 #include "grloadac.h"     // grssgSetCurrentOptions
 #include "grscreen.h"
 
+#include "stb_ds.h"       // array dinamici
+
 namespace ssggraph {
 
 using std::string;
@@ -1082,28 +1084,62 @@ cGrBoard::grDispCarBoard2(const tSituation *s)
 // @param car[in] A pointer to the current driver's car
 // @return void
 //
-static lapTime
-findClosest(lapTime *lapTimes, int n, float T)
+
+// Linear interpolation between two arbitrary typed values
+float _lerp(float val0, float val1, float t)
 {
-    // Ricerca binaria
-    int left = 0, right = n - 1;
-    while (left < right) {
-        int mid = left + (right - left) / 2;
-        if (lapTimes[mid].time < T) {
-            left = mid + 1;
+    float r = (val0 * (1.0f - t)) + (val1 * t);
+    return r;
+}
+
+size_t binarySearch(lapTelemetry *arr, size_t size, float target)
+{
+    size_t left = 0;
+    size_t right = size - 1;
+
+    while (left <= right) {
+        size_t mid = left + (right - left) / 2;
+
+        if (arr->data[mid].distance == target) {
+            return mid; // Se il target è trovato, restituisci l'indice
+        } else if (arr->data[mid].distance < target) {
+            left = mid + 1; // Cerca nella metà destra
         } else {
-            right = mid;
+            right = mid - 1; // Cerca nella metà sinistra
         }
     }
+    return left; // Restituisce la posizione in cui il target si inserirebbe
+}
 
-    // Controlla i valori vicini
-    lapTime closest = lapTimes[left];
-    if (left > 0 && fabs(lapTimes[left - 1].time - T) < fabs(closest.time - T)) {
-        closest = lapTimes[left - 1];
+size_t findClosest(lapTelemetry *tel, size_t size, float target, size_t *closest1, size_t *closest2)
+{
+    size_t pos = binarySearch(tel, size, target);
+
+    // Inizializza i valori più vicini
+    *closest1 = *closest2 = 0;
+
+    // Controlla i valori a sinistra e a destra della posizione trovata
+    if (pos > 0) {
+        *closest1 = pos - 1; // Valore a sinistra
+    }
+    if (pos < size) {
+        *closest2 = pos; // Valore a destra
     }
 
-    return closest;
+    // Se ci sono solo valori a sinistra, aggiorna closest2
+    if (pos > 0 && pos < size) {
+        if (fabsf(tel->data[pos].distance - target) < fabsf(tel->data[pos - 1].distance - target)) {
+            *closest1 = pos;
+            *closest2 = pos - 1;
+        } else {
+            *closest1 = pos - 1;
+            *closest2 = pos;
+        }
+    }
+    
+    return pos;
 }
+
 void
 cGrBoard::grDispCarBoard3(const tSituation *s)
 {
@@ -1172,14 +1208,55 @@ cGrBoard::grDispCarBoard3(const tSituation *s)
     y -= dy;
 
     // ------------------------------------------------------------------------
-//    printf("arrlen(car->_currRTimeAtPos)%ld - arrcap(car->_currRTimeAtPos)%ld\n", 
-//                        arrlen(car->_currRTimeAtPos),
-//                        arrcap(car->_currRTimeAtPos));
+    if (car_->_laps > 1) {
+    	size_t lenDataPoints = arrlen(car_->_telemetry.data);
+    	size_t capDataPoints = arrcap(car_->_telemetry.data);
+        float currLapDistRaced = car_->_distRaced;
+        float prevLapDistRaced = car_->_distRaced - car_->_trackLength;
+        float bestLapDistRaced = car_->_distRaced - car_->_trackLength * (car_->_laps - car_->_bestLap);
 
-//    float T = 3.0;
+        size_t closestCurr, closestCurr1, closestCurr2;
+        closestCurr = findClosest(&car_->_telemetry, lenDataPoints, currLapDistRaced, &closestCurr1, &closestCurr2);
+        float currDist = car_->_telemetry.data[closestCurr].distance;
+        float currTime = car_->_telemetry.data[closestCurr].time;
+        
+        size_t closestBest, closestBest1, closestBest2;
+        closestBest = findClosest(&car_->_telemetry, lenDataPoints, bestLapDistRaced, &closestBest1, &closestBest2);
+        float bestDist = car_->_telemetry.data[closestBest].distance;
+        float bestTime = car_->_telemetry.data[closestBest].time;
 
-//    lapTime closest = findClosest(car->_currRTimeAtPos, arrlen(car->_currRTimeAtPos), T);
-//    printf("Il valore più prossimo a %.2f è %.2f con distanza %.2f.\n", T, closest.time, closest.distance);
+        float currTimeAtBest = car_->_telemetry.data[car_->_telemetry.bestLapIndex].time;
+
+        int lines = 0;
+        lines++; printf("closest [idx] : %ld                                    \n", closestCurr);
+        lines++; printf("---------------------                                    \n");
+        lines++; printf("curr distance : %f[m]                                    \n", currDist);
+        lines++; printf("curr time     : %f[s]                                    \n", currTime + car_->_lap0Time - car_->_curTime);
+        lines++; printf("---------------------                                    \n");
+        lines++; printf("best distance : %f[m]                                    \n", bestDist);
+        lines++; printf("best time     : %f[s]                                    \n", bestTime);
+        lines++; printf("---------------------                                    \n");
+        lines++; printf("     lap idx  : %ld                                    \n", car_->_telemetry.lapIndex[car_->_laps-1]);
+        lines++; printf("best lap idx  : %ld                                    \n", car_->_telemetry.bestLapIndex);
+        lines++; printf("---------------------                                    \n");
+        lines++; printf("currTimeAtBest: %f[s]                                    \n", currTimeAtBest);
+        lines++; printf("best          : %f[s]                                    \n", bestTime - currTimeAtBest);
+        float db = (currTime + car_->_lap0Time - car_->_curTime) - (bestTime - currTimeAtBest);
+        lines++; printf("delta best    : %.3f[s]                                    \n", db);
+
+        lines++; printf("---------------------                                    \n");
+        lines++; printf("arrlen = %ld        %f [Mb]                                                 \n",
+                    lenDataPoints,
+                    ((float)(lenDataPoints * sizeof(telemetryData)) / 1024.0f) / 1024.0f);
+        lines++; printf("arrcap = %ld        %f [Mb]                                                 \n",
+                    capDataPoints,
+                    ((float)(capDataPoints * sizeof(telemetryData)) / 1024.0f) / 1024.0f);
+        lines++; printf("                                                                        \n");
+        for (int up = 0; up < lines+1; up++) {
+            printf("\033[F");
+        }
+        fflush(stdout);
+    }
 
 //driverinfo
     color = normal_color_;
