@@ -743,6 +743,14 @@ RmReadyToRace(void * /* dummy */)
    LmRaceEngine().stopPreracePause();
 }
 
+static void
+RmOnJoystick(int joy, int button, int value)
+{
+	SDL_JoystickEventState(SDL_IGNORE);
+	GfuiApp().eventLoop().setJoystickButtonCB(NULL);
+	RmReadyToRace(NULL);
+}
+
 void
 RmAddPreRacePauseItems()
 {
@@ -750,6 +758,8 @@ RmAddPreRacePauseItems()
    {
       rmPreRacePause = true;
       GfuiAddKey(rmScreenHandle, GFUIK_RETURN,  "Ready", 0, RmReadyToRace, NULL);
+	  SDL_JoystickEventState(SDL_ENABLE);
+	  GfuiApp().eventLoop().setJoystickButtonCB(RmOnJoystick);
 
       // The menu changed.
       rmbMenuChanged = true;

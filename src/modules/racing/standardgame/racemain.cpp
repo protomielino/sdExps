@@ -731,7 +731,7 @@ RePreRacePause(void)
         {
             mode = RM_ASYNC | RM_NEXT_STEP;
             //ReStop();
-            ReSituation::self().setRaceMessage("Hit <Enter> to Start",-1/*always*/, /*big=*/true);
+            ReSituation::self().setRaceMessage("Hit <Enter> or any joystick button to Start",-1/*always*/, /*big=*/true);
             ReStop();
         }
     }
